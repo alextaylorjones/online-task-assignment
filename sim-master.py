@@ -10,9 +10,11 @@ class TeamBanditModel:
     latent_space = None
     mapping = None
     task = None
+    team_native = None
 
     def __init__(self):
         print("Created blank team bandit model instance.")
+
 
     """
     T is the time horizon of the bandit
@@ -30,6 +32,14 @@ class TeamBanditModel:
     def get_skill_space(self):
         return self.skill_space
 
+
+    """
+    a is an MxN list of skill vectors, aka a native representation of the team
+    """
+    def set_team(self,S):
+        self.team_native = S
+    def get_team(self):
+        return self.team_native
 
     """ 
     B is a numpy 2xN array, where each pair of entries corresponds to lower/upper bounds on latent space
@@ -63,12 +73,32 @@ def create_model(name):
     
     model = TeamBanditModel()
 
+    horizon = None
+    skill_space = None
+    latent_space = None
+    mapping = None
+    task = None
+    teams = None
+
     if (name.startswith("test")):
         if (name.startswith("test-1")):
-            model.set_horizon(20)
+            horizon = 20
+            skill_space = np.array([[0,0,0],[1,1,1]])
+            latent_space = np.array([[0,0],[3,3]])
+            mapping = np.array([[1,1],[1,1],[1,1]])
+            task = np.array([2,2])
+        else:
+            print ("No such name '" + name + "' for model creation routine, exiting")
+            exit()
+    else:
+        print ("No such name '" + name + "'for model creation routine, exiting")
+        exit()
 
-            
-            mode.set_sk
+    model.set_horizon(horizon)
+    model.set_skill_space(skill_space)
+    model.set_latent_space(latent_space)
+    model.set_true_mapping(mapping)
+    model.set_true_task(task)
             
 
     return model
@@ -115,7 +145,10 @@ if __name__ == "__main__":
     print ("Name = " + name + "; algs = ",)
     print(algs)
 
-    trials = int(args.trials)
+    if (args.trials):
+        trials = int(args.trials)
+    else:
+        trials = DEFAULT_TRIALS
 
 
     #construct model 
